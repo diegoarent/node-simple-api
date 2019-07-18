@@ -7,5 +7,6 @@ const routes = new Router();
 routes.get('/users', UserController.index);
 routes.post('/users', UserController.store);
 routes.get('/users/:userId', UserController.read);
+routes.put('/users/:userId', UserController.update);
 
 export default routes;
