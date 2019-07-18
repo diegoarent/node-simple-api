@@ -1,0 +1,8 @@
+{
+  "name": "node-simple-api",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/diegoarent/node-simple-api.git",
+  "author": "TneraOgeid",
+  "license": "MIT"
+}
