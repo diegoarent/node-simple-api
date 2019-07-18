@@ -21,6 +21,19 @@ class UserController {
 
     return res.json(users);
   }
+
+  read(req, res) {
+    const { userId } = req.params;
+
+    const user = users[userId];
+
+    if (!user) {
+      return res.status(400).json({ error: 'User not found!' });
+    }
+
+    // Usuário encontrado
+    return res.json(user);
+  }
 }
 
 export default new UserController();
