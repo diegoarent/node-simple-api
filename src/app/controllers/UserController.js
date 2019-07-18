@@ -29,11 +29,9 @@ class UserController {
       return res.status(400).json({ error: 'User not found!' });
     }
 
-    // Usuário encontrado
     return res.json(users[userId]);
   }
 
-  // Update
   update(req, res) {
     const { userId } = req.params;
     const { name } = req.body;
@@ -54,6 +52,18 @@ class UserController {
     }
 
     users[userId] = name;
+
+    return res.json(users);
+  }
+
+  delete(req, res) {
+    const { userId } = req.params;
+
+    if (!users[userId]) {
+      return res.status(400).json({ error: 'User not found!' });
+    }
+
+    users.splice(userId, 1);
 
     return res.json(users);
   }
