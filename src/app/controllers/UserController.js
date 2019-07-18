@@ -1,6 +1,8 @@
+const users = ['User', 'Diego', 'Gisele', 'Lia'];
+
 class UserController {
-  async index(req, res) {
-    return res.json({ ok: true });
+  index(req, res) {
+    return res.json(users);
   }
 }
 
