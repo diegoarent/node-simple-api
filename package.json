@@ -10,6 +10,7 @@
     "express": "^4.17.1"
   },
   "devDependencies": {
+    "eslint": "^6.0.1",
     "nodemon": "^1.19.1",
     "sucrase": "^3.10.1"
   }
