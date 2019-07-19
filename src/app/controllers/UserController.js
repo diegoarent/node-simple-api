@@ -1,7 +1,11 @@
-const users = ['User', 'Diego', 'Gisele', 'Lia'];
+import User from '../models/User';
+
+// const users = ['User', 'Diego', 'Gisele', 'Lia'];
 
 class UserController {
-  index(req, res) {
+  async index(req, res) {
+    const users = await User.findAll();
+
     return res.json(users);
   }
 
