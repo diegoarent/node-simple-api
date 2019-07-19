@@ -1,6 +1,6 @@
-import User from '../models/User';
+import * as Yup from 'yup';
 
-// const users = ['User', 'Diego', 'Gisele', 'Lia'];
+import User from '../models/User';
 
 class UserController {
   async index(req, res) {
@@ -9,21 +9,34 @@ class UserController {
     return res.json(users);
   }
 
-  store(req, res) {
-    const { name } = req.body;
+  async store(req, res) {
+    const schema = Yup.object().shape({
+      name: Yup.string().required(),
+      email: Yup.string()
+        .email()
+        .required(),
+      password: Yup.string()
+        .min(6)
+        .required(),
+    });
 
-    if (!name) {
-      res.status(400).json({ error: 'Invalid name!' });
+    if (!(await schema.isValid(req.body))) {
+      return res.status(400).json({ error: 'Validation fails.' });
     }
 
-    const userExists = users.find(user => user === name);
+    const userExists = await User.findOne({ where: { email: req.body.email } });
     if (userExists) {
-      res.status(400).json({ error: 'User already exists!' });
+      return res.status(400).json({ error: 'User already exists!' });
     }
 
-    users.push(name);
+    req.body.password_hash = req.body.password;
+    const { id, name, email } = await User.create(req.body);
 
-    return res.json(users);
+    return res.json({
+      id,
+      name,
+      email,
+    });
   }
 
   read(req, res) {
@@ -45,12 +58,12 @@ class UserController {
     }
 
     if (!name) {
-      res.status(400).json({ error: 'Invalid name!' });
+      return res.status(400).json({ error: 'Invalid name!' });
     }
 
     const userExists = users.findIndex(user => user === name);
     if (userExists !== -1 && userExists != userId) {
-      res.status(400).json({
+      return res.status(400).json({
         error: 'Name already choosen by other!',
       });
     }
