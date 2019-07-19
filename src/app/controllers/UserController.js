@@ -47,7 +47,13 @@ class UserController {
       return res.status(400).json({ error: 'User not found!' });
     }
 
-    return res.json(user);
+    if (user.id !== req.tokenUserId) {
+      return res.status(400).json({ error: 'You don´t read another user!' });
+    }
+
+    const { id, name, email } = user;
+
+    return res.json({ id, name, email });
   }
 
   async update(req, res) {
