@@ -58,9 +58,15 @@ class UserController {
       email: Yup.string()
         .email()
         .required(),
+      oldPassword: Yup.string().min(6),
       password: Yup.string()
         .min(6)
-        .required(),
+        .when('oldPassword', (oldPassword, field) =>
+          oldPassword ? field.required() : field
+        ),
+      confirmPassword: Yup.string().when('password', (password, field) =>
+        password ? field.required().oneOf([Yup.ref('password')]) : field
+      ),
     });
 
     if (!(await schema.isValid(req.body))) {
@@ -72,7 +78,7 @@ class UserController {
       return res.status(400).json({ error: 'User not found!' });
     }
 
-    const { email } = req.body;
+    const { email, oldPassword } = req.body;
     if (email !== user.email) {
       const userExists = await User.findOne({
         where: { email: req.body.email },
@@ -80,6 +86,10 @@ class UserController {
       if (userExists) {
         return res.status(400).json({ error: 'E-mail already exists!' });
       }
+    }
+
+    if (oldPassword && !(await user.checkPassword(oldPassword))) {
+      return res.status(401).json({ error: 'Password does not match!' });
     }
 
     const { id, name } = await user.update(req.body);
