@@ -10,7 +10,7 @@ const routes = new Router();
 routes.get('/users', UserController.index);
 routes.post('/users', UserController.store);
 routes.get('/users/:userId', authMiddleware, UserController.read);
-routes.put('/users/:userId', UserController.update);
+routes.put('/users/:userId', authMiddleware, UserController.update);
 routes.delete('/users/:userId', UserController.delete);
 
 // Session

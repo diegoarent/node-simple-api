@@ -84,6 +84,10 @@ class UserController {
       return res.status(400).json({ error: 'User not found!' });
     }
 
+    if (user.id !== req.tokenUserId) {
+      return res.status(400).json({ error: 'You don´t update another user!' });
+    }
+
     const { email, oldPassword } = req.body;
     if (email !== user.email) {
       const userExists = await User.findOne({
