@@ -51,28 +51,42 @@ class UserController {
     return res.json(user);
   }
 
-  update(req, res) {
+  async update(req, res) {
     const { userId } = req.params;
-    const { name } = req.body;
 
-    if (!users[userId]) {
+    const schema = Yup.object().shape({
+      name: Yup.string().required(),
+      email: Yup.string()
+        .email()
+        .required(),
+      password: Yup.string()
+        .min(6)
+        .required(),
+    });
+
+    if (!(await schema.isValid(req.body))) {
+      return res.status(400).json({ error: 'Validation fails.' });
+    }
+
+    const user = await User.findByPk(userId);
+    if (!user) {
       return res.status(400).json({ error: 'User not found!' });
     }
 
-    if (!name) {
-      return res.status(400).json({ error: 'Invalid name!' });
-    }
-
-    const userExists = users.findIndex(user => user === name);
-    if (userExists !== -1 && userExists != userId) {
-      return res.status(400).json({
-        error: 'Name already choosen by other!',
+    const { email } = req.body;
+    if (email !== user.email) {
+      const userExists = await User.findOne({
+        where: { email: req.body.email },
       });
+      if (userExists) {
+        return res.status(400).json({ error: 'E-mail already exists!' });
+      }
     }
 
-    users[userId] = name;
+    req.body.password_hash = req.body.password;
+    const { id, name } = await user.update(req.body);
 
-    return res.json(users);
+    return res.json({ id, name, email });
   }
 
   async delete(req, res) {
