@@ -23,6 +23,20 @@ class FileController {
 
     return res.json(files);
   }
+
+  async delete(req, res) {
+    const { fileId } = req.params;
+
+    const file = await File.findByPk(fileId);
+
+    if (!file) {
+      return res.status(400).json({ error: 'File not found!' });
+    }
+
+    file.destroy();
+
+    return res.status(204).send();
+  }
 }
 
 export default new FileController();
