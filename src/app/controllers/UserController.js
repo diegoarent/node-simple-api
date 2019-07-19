@@ -39,14 +39,16 @@ class UserController {
     });
   }
 
-  read(req, res) {
+  async read(req, res) {
     const { userId } = req.params;
 
-    if (!users[userId]) {
+    const user = await User.findByPk(userId);
+
+    if (!user) {
       return res.status(400).json({ error: 'User not found!' });
     }
 
-    return res.json(users[userId]);
+    return res.json(user);
   }
 
   update(req, res) {
