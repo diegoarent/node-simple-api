@@ -60,16 +60,18 @@ class UserController {
     return res.json(users);
   }
 
-  delete(req, res) {
+  async delete(req, res) {
     const { userId } = req.params;
 
-    if (!users[userId]) {
+    const user = await User.findByPk(userId);
+
+    if (!user) {
       return res.status(400).json({ error: 'User not found!' });
     }
 
-    users.splice(userId, 1);
+    await user.destroy();
 
-    return res.json(users);
+    return res.status(204).send();
   }
 }
 
