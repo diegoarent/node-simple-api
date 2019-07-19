@@ -116,6 +116,10 @@ class UserController {
       return res.status(400).json({ error: 'User not found!' });
     }
 
+    if (user.id !== req.tokenUserId) {
+      return res.status(400).json({ error: 'You don´t delete another user!' });
+    }
+
     await user.destroy();
 
     return res.status(204).send();
