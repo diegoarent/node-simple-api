@@ -29,7 +29,6 @@ class UserController {
       return res.status(400).json({ error: 'User already exists!' });
     }
 
-    req.body.password_hash = req.body.password;
     const { id, name, email } = await User.create(req.body);
 
     return res.json({
@@ -83,7 +82,6 @@ class UserController {
       }
     }
 
-    req.body.password_hash = req.body.password;
     const { id, name } = await user.update(req.body);
 
     return res.json({ id, name, email });
