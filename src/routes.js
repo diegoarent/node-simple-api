@@ -23,6 +23,7 @@ routes.delete('/users/:userId', authMiddleware, UserController.delete);
 routes.post('/sessions', SessionController.store);
 
 // Files
+routes.get('/files', FileController.index);
 routes.post(
   '/files',
   authMiddleware,
