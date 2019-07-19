@@ -1,4 +1,7 @@
+import { resolve } from 'path';
 import File from '../models/File';
+
+const fs = require('fs');
 
 class FileController {
   async store(req, res) {
@@ -33,7 +36,14 @@ class FileController {
       return res.status(400).json({ error: 'File not found!' });
     }
 
-    file.destroy();
+    const path = resolve(__dirname, '..', '..', '..', 'tmp', 'uploads');
+    try {
+      fs.unlinkSync(`${path}\\${file.path}`);
+      file.destroy();
+    } catch (err) {
+      console.log(err);
+      return res.status(400).json({ error: 'Delete error!' });
+    }
 
     return res.status(204).send();
   }
